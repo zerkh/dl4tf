@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import argparser
+import argparse
 
 def prepare_data(data_path, vocab_size, num_steps):
 	word_dict = {}
@@ -22,9 +22,9 @@ def prepare_data(data_path, vocab_size, num_steps):
 
 	for x in X:
 		for w in x:
-			if x not in word_dict.values():
-				word_dict[idx] = x
-				inv_word_dict[x] = idx
+			if w not in word_dict.values():
+				word_dict[idx] = w
+				inv_word_dict[w] = idx
 
 	for i in range(num_steps, len(word_dict)):
 		del inv_word_dict[word_dict[i]]
@@ -91,7 +91,7 @@ def train(sess, train_X, train_Y, num_steps, batch_size, input_size, state_size,
 				X = train_X[i*batch_size:len(train_X), :, :]
 				Y = train_Y[i*batch_size:len(train_X), :, :]
 
-			_, cost_val = sess.run(train_step, feed_dict={_input=X, _target=Y})
+			_, cost_val = sess.run(train_step, feed_dict={_input:X, _target:Y})
 			total_cost += cost_val
 		print "Iter %d cost: %g" %(step, total_cost)
 
@@ -114,7 +114,7 @@ def test(sess, test_X, word_dict):
 	
 
 def main(_):
-	parser = argparser.ArgumentParser()
+	parser = argparse.ArgumentParser()
 	parser.add_argument("--input_size", default=100, type=int)
 	parser.add_argument("--vocab_size", default=30000, type=int)
 	parser.add_argument("--state_size", default=100, type=int)
@@ -126,7 +126,7 @@ def main(_):
 	num_steps = option.num_steps
 	data_path = option.data_dir
 	input_size = option.input_size
-	output_size = option.vocab_size
+	vocab_size = option.vocab_size
 	state_size = option.state_size
 	batch_size = option.batch_size
 
